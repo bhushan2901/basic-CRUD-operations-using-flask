@@ -10,7 +10,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-03-10'
-__updated__='2018-03-10'
+__updated__='2018-03-11'
 
 import os
 from flask import Flask, jsonify, g
@@ -18,39 +18,33 @@ from flask_sqlalchemy import SQLAlchemy
 import functools
 from flask import jsonify
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-db_path = os.path.join(basedir, '../data-dev.sqlite')
-
-IGNORE_AUTH = True
-SECRET_KEY = 'SECRET_KEY'
-SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + db_path
-
+""" create a SQLAlchemy object to be used through out the project """
 db = SQLAlchemy()
 
 def create_app(config_name):
-    """ Create an application instance. and return app object"""
-    print(__name__)
+    """ Create an application instance, initialize the DB, and return app object"""
     app = Flask(__name__)
 
     # apply configuration
     cfg = os.path.join(os.getcwd(), 'config', config_name + '.py')
     app.config.from_pyfile(cfg)
 
+    # initialize extensions
+    db.init_app(app)
+
     # register blueprints
     from .api_v1 import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v1')
 
-    # initialize extensions
-    db.init_app(app)
     return app
 
 
 def json(f):
     """Generate a JSON response from a database model or a Python
     dictionary."""
+    # invoke the wrapped function
     @functools.wraps(f)
     def wrapped(*args, **kwargs):
-        # invoke the wrapped function
         rv = f(*args, **kwargs)
 
         # the wrapped function can return the dictionary alone,
