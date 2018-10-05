@@ -9,8 +9,8 @@
 __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
-__date__ = '2018-03-11'
-__updated__='2018-03-11'
+__date__ = '2018-10-04'
+__updated__='2018-10-04'
 
 from flask import url_for, current_app
 from .. import db
