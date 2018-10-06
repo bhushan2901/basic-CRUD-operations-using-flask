@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 # encoding: utf-8
 
@@ -27,3 +26,8 @@ def get_item(id):
     Returns:
               Returns Json object for the Item details"""
     return Item.query.get_or_404(id).export_data()
+
+@api.route('/items/', methods=['GET'])
+@json
+def get_shopping_list_items(id):
+    return None

@@ -59,8 +59,13 @@ def json(f):
 
         # if the response was a database model, then convert it to a
         # dictionary
-        if not isinstance(rv, dict):
+        print(rv)
+
+        if not isinstance(rv, dict) and not isinstance(rv, list):
             rv = rv.export_data()
+
+        if isinstance(rv, list):
+          rv=[i.export_data() for i in rv]
 
         # generate the JSON response
         rv = jsonify(rv)
@@ -70,3 +75,8 @@ def json(f):
             rv.headers.extend(headers)
         return rv
     return wrapped
+
+
+class ValidationError(ValueError):
+    """ Validation error for any type of user validation currently blank"""
+    pass

@@ -10,7 +10,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-04'
-__updated__='2018-10-04'
+__updated__='2018-10-05'
 
 from flask import url_for, current_app
 from .. import db
@@ -25,7 +25,7 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     """ Shopping list ID for the item """
-    shopping_list_id = db.Column(db.Integer)
+    shopping_list_id = db.Column(db.Integer,  db.ForeignKey('shoppinglists.name'), index=True)
 
     """ Quantity for the item in shopping list """
     quantity = db.Column(db.Integer)
