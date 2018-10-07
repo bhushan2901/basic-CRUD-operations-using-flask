@@ -10,7 +10,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-06'
-__updated__='2018-10-07'
+__updated__ = '2018-10-07'
 
 from flask import url_for, current_app
 from .. import db
@@ -33,7 +33,8 @@ class User(db.Model):
     name = db.Column(db.String(64), index=True)
 
     """ Shoppinglists for a user ( ideally this should be only 1 shopping list per user) """
-    shoppinglists = db.relationship('ShoppingList', backref='user', lazy='dynamic')
+    shoppinglists = db.relationship(
+        'ShoppingList', backref='user', lazy='dynamic')
 
     def get_url(self):
         """ return self URL"""
@@ -46,7 +47,7 @@ class User(db.Model):
             'id': self.id,
             'name': self.name,
             'shoppinglist_url': url_for('api.get_user_shoppinglist', userid=self.id,
-                                  _external=True)
+                                        _external=True)
         }
 
     def get_shoppinglists_by_name(self, name):
@@ -54,9 +55,10 @@ class User(db.Model):
         for i in self.shoppinglists:
             if i.name == name:
                 return i
-        v = ValidationError('Invalid Shopping List: shoppinglist with specified name is not found : ' + name)
+        v = ValidationError(
+            'Invalid Shopping List: shoppinglist with specified name is not found : ' + name)
         v.response_code = 404
-        v.error="not found"
+        v.error = "not found"
         raise v
 
     def get_shoppinglists_by_id(self, id):
@@ -64,9 +66,10 @@ class User(db.Model):
         for i in self.shoppinglists:
             if i.id == id:
                 return i
-        v = ValidationError('Invalid Shopping List: shoppinglist with specified ID is not found : ' + str(id))
+        v = ValidationError(
+            'Invalid Shopping List: shoppinglist with specified ID is not found : ' + str(id))
         v.response_code = 404
-        v.error="not found"
+        v.error = "not found"
         raise v
 
     def is_shopping_list_exists(self, data):
@@ -77,7 +80,8 @@ class User(db.Model):
                 if i.name == lstname:
                     return True
         except KeyError as e:
-            raise ValidationError('Invalid Shopping List: missing ' + e.args[0])
+            raise ValidationError(
+                'Invalid Shopping List: missing ' + e.args[0])
         return False
 
     def import_data(self, data):

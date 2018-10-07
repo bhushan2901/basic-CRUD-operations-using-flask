@@ -10,7 +10,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-05'
-__updated__='2018-10-05'
+__updated__ = '2018-10-05'
 
 from flask import url_for, current_app
 from .. import db
@@ -18,6 +18,7 @@ from .. import ValidationError
 from datetime import datetime, timezone
 from dateutil import parser as datetime_parser
 from dateutil.tz import tzutc
+
 
 class ShoppingList(db.Model):
     """ DB model class for the Shopping List """
@@ -32,11 +33,11 @@ class ShoppingList(db.Model):
     name = db.Column(db.String, unique=True)
 
     "store name for this shopping lists"
-    storename=db.Column(db.String)
+    storename = db.Column(db.String)
 
     """ userid which has this shohpping list object """
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
-                            index=True)
+                        index=True)
 
     """ Current date time at the time shopping list is created """
     date = db.Column(db.DateTime, default=datetime.now)
@@ -54,11 +55,11 @@ class ShoppingList(db.Model):
         return {
             'self_url': self.get_url(),
             'user_url': self.user.get_url(),
-            "name" : self.name,
+            "name": self.name,
             'date': self.date.isoformat() + 'Z',
-            'storename' : self.storename,
+            'storename': self.storename,
             'items': [item.export_data() for item in self.items],
-            'id' : self.id
+            'id': self.id
             # TODO add a code to add the items
         }
 
@@ -68,28 +69,32 @@ class ShoppingList(db.Model):
         try:
             self.name = data['name']
             self.storename = data['storename']
-            self.date = datetime_parser.parse(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))
+            self.date = datetime_parser.parse(datetime.now(
+                timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))
         except KeyError as e:
-            raise ValidationError('Invalid Shopping List: missing ' + e.args[0])
+            raise ValidationError(
+                'Invalid Shopping List: missing ' + e.args[0])
         return self
-
 
     def update_data(self, id, data):
         """ update the shopping list wiht new data, every time shopping list is updated the date filed will be updated as well"""
         try:
-            lstname=data['name']
-            for lst in self.user.shoppinglists :
-                if lst.name==lstname and lst.id != id :
-                    raise ValidationError('Invalid Shopping List: shopping list with same name already exists with differnet ID')
+            lstname = data['name']
+            for lst in self.user.shoppinglists:
+                if lst.name == lstname and lst.id != id:
+                    raise ValidationError(
+                        'Invalid Shopping List: shopping list with same name already exists with differnet ID')
 
             self.name = lstname
 
             if 'storename' in data:
                 self.storename = data['storename']
 
-            self.date = datetime_parser.parse(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))
+            self.date = datetime_parser.parse(datetime.now(
+                timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))
         except KeyError as e:
-            raise ValidationError('Invalid Shopping List: missing ' + e.args[0])
+            raise ValidationError(
+                'Invalid Shopping List: missing ' + e.args[0])
         return self
 
     def get_item_by_id(self, id):
@@ -97,9 +102,10 @@ class ShoppingList(db.Model):
         for i in self.items:
             if i.id == id:
                 return i
-        v = ValidationError('Invalid Items List: Item with specified ID is not found : ' + str(id))
+        v = ValidationError(
+            'Invalid Items List: Item with specified ID is not found : ' + str(id))
         v.response_code = 404
-        v.error="not found"
+        v.error = "not found"
         raise v
 
     def get_item_by_name(self, name):
@@ -107,9 +113,10 @@ class ShoppingList(db.Model):
         for i in self.items:
             if i.name == name:
                 return i
-        v = ValidationError('Invalid Items List: Item with specified name is not found : ' + name)
+        v = ValidationError(
+            'Invalid Items List: Item with specified name is not found : ' + name)
         v.response_code = 404
-        v.error="not found"
+        v.error = "not found"
         raise v
 
     def is_item_list_exists(self, data):

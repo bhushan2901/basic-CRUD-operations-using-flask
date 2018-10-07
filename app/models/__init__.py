@@ -13,6 +13,6 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-03'
-__updated__='2018-10-03'
+__updated__ = '2018-10-03'
 
 from . import ItemModel

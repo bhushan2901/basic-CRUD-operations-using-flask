@@ -10,12 +10,13 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-06'
-__updated__='2018-10-07'
+__updated__ = '2018-10-07'
 
 from flask import request, jsonify
 from . import api
 from .. import db, json
 from .. import ValidationError
+
 
 @api.errorhandler(ValidationError)
 def bad_request(e):
@@ -30,11 +31,11 @@ def bad_request(e):
 @api.app_errorhandler(404)  # this has to be an app-wide handler
 def not_found(e):
     print(e.description)
-    ermsg='invalid resource URI'
+    ermsg = 'invalid resource URI'
     if e:
         ermsg = e.description
     response = jsonify({'status': 404, 'error': 'not found',
-                            'message': ermsg})
+                        'message': ermsg})
     response.status_code = 404
     return response
 

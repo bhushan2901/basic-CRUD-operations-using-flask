@@ -10,7 +10,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-03'
-__updated__='2018-10-07'
+__updated__ = '2018-10-07'
 
 import os
 from flask import Flask, jsonify
@@ -20,6 +20,7 @@ from flask import jsonify
 
 """ create a SQLAlchemy object to be used through out the project """
 db = SQLAlchemy()
+
 
 def create_app(config_name):
     """ Create an application instance, initialize the DB, and return app object"""
@@ -65,7 +66,7 @@ def json(f):
                 rv = rv.export_data()
 
         if isinstance(rv, list):
-          rv=[i.export_data() for i in rv]
+            rv = [i.export_data() for i in rv]
 
         # generate the JSON response
         rv = jsonify(rv)
@@ -82,5 +83,5 @@ class ValidationError(ValueError):
 
     """ set response code for the validation"""
     response_code = 400
-    error="bad request"
+    error = "bad request"
     pass

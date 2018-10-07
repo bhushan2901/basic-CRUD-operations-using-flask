@@ -10,10 +10,11 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-04'
-__updated__='2018-10-05'
+__updated__ = '2018-10-05'
 
 from flask import url_for, current_app
 from .. import db
+
 
 class Item(db.Model):
     """ DB model class for the Item """
@@ -28,7 +29,8 @@ class Item(db.Model):
     name = db.Column(db.String)
 
     """ Shopping list ID for the item """
-    shopping_list_id = db.Column(db.Integer,  db.ForeignKey('shoppinglists.id'), index=True)
+    shopping_list_id = db.Column(
+        db.Integer,  db.ForeignKey('shoppinglists.id'), index=True)
 
     """ Quantity for the item in shopping list """
     quantity = db.Column(db.Integer)
@@ -36,15 +38,15 @@ class Item(db.Model):
     def get_url(self):
         """ Return the API URL for this item to be retrived directly """
         return url_for('api.get_item', id=self.id, lstid=self.shoppinglist.id,
-                        userid=self.shoppinglist.user.id, _external=True)
+                       userid=self.shoppinglist.user.id, _external=True)
 
     def export_data(self):
         """ Export the item and all its attributes in json format"""
         return {
             'self_url': self.get_url(),
             'quantity': self.quantity,
-            'id' : self.id,
-            'name' : self.name
+            'id': self.id,
+            'name': self.name
         }
 
     def import_data(self, data):
@@ -54,7 +56,7 @@ class Item(db.Model):
             name = data['name']
             self.name = name
 
-            if self.quantity :
+            if self.quantity:
                 self.quantity = self.quantity + int(data['quantity'])
             else:
                 self.quantity = int(data['quantity'])
