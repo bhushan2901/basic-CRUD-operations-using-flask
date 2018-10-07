@@ -73,9 +73,9 @@ class User(db.Model):
         """ check if the shopping lists exists with same name """
         try:
             lstname = data['name']
-            lst=self.get_shoppinglists_by_name(lstname)
-            if lst :
-                return True
+            for i in self.shoppinglists:
+                if i.name == lstname:
+                    return True
         except KeyError as e:
             raise ValidationError('Invalid Shopping List: missing ' + e.args[0])
         return False

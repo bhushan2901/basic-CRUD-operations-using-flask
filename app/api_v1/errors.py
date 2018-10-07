@@ -39,7 +39,7 @@ def not_found(e):
     return response
 
 
-@api.errorhandler(405)
+@api.app_errorhandler(405)
 def method_not_supported(e):
     response = jsonify({'status': 405, 'error': 'method not supported',
                         'message': 'the method is not supported'})

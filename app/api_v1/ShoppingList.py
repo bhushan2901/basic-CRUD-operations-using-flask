@@ -36,7 +36,7 @@ def get_shopping_list_using_pattern(pattern):
 @api.route('/users/<int:userid>/shoppinglists/', methods=['GET'])
 @json
 def get_user_shoppinglist(userid):
-    """ return the shoppinglists for a user (ideally this should only be one shopping list per user) """
+    """ return the shoppinglists for a user """
     user = User.query.get_or_404(userid)
     return user.shoppinglists.all()
 
@@ -47,6 +47,7 @@ def new_user_shoppinglists(userid):
     user = User.query.get_or_404(userid)
     if user.is_shopping_list_exists(request.json):
         raise ValidationError('Invalid Shopping List: shopping list with same name already exists ')
+    print("bhushan")
     slst = ShoppingList(user=user)
     slst.import_data(request.json)
     db.session.add(slst)

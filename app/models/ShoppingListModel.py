@@ -57,7 +57,7 @@ class ShoppingList(db.Model):
             "name" : self.name,
             'date': self.date.isoformat() + 'Z',
             'storename' : self.storename,
-            'id': self.id
+            'id': [item.export_data() for item in self.items]
             # TODO add a code to add the items
         }
 
@@ -90,3 +90,13 @@ class ShoppingList(db.Model):
         except KeyError as e:
             raise ValidationError('Invalid Shopping List: missing ' + e.args[0])
         return self
+
+    def get_item_by_id(self, id):
+        """ Return the single item which matches the id else return None """
+        for i in self.items:
+            if i.id == id:
+                return i
+        v = ValidationError('Invalid Items List: Item with specified ID is not found : ' + str(id))
+        v.response_code = 404
+        v.error="not found"
+        raise v

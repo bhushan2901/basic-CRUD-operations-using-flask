@@ -13,7 +13,7 @@ __date__ = '2018-10-03'
 __updated__='2018-10-07'
 
 import os
-from flask import Flask, jsonify, g
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import functools
 from flask import jsonify

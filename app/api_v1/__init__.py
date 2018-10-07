@@ -16,4 +16,4 @@ from flask import Blueprint
 
 api = Blueprint('api', __name__)
 
-from . import items, users, ShoppingList, errors 
+from . import items, users, shoppinglist, errors 
