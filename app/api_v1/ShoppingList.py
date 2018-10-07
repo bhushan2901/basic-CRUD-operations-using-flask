@@ -45,7 +45,7 @@ def get_user_shoppinglist(userid):
 def new_user_shoppinglists(userid):
     """ add item to the shopping list"""
     user = User.query.get_or_404(userid)
-    if user.isshoppinglistexists(request.json):
+    if user.is_shopping_list_exists(request.json):
         raise ValidationError('Invalid Shopping List: shopping list with same name already exists ')
     slst = ShoppingList(user=user)
     slst.import_data(request.json)
@@ -86,8 +86,7 @@ def update_shoppinglists_by_id(userid,id):
     """ udate a user in the system """
     user = User.query.get_or_404(userid)
     lst=user.get_shoppinglists_by_id(id)
-    #TODO write a function to update the shopping lists
-    lst.update_shopping_list(request.json)
+    lst.update_data(id,request.json)
     db.session.add(lst)
     db.session.commit()
-    return user.export_data()
+    return lst.export_data()

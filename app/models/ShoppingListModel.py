@@ -73,10 +73,19 @@ class ShoppingList(db.Model):
         return self
 
 
-    def update_data(self, data, name):
-        """ TODO """
+    def update_data(self, id, data):
+        """ update the shopping list wiht new data, every time shopping list is updated the date filed will be updated as well"""
         try:
-            self.name = name
+            lstname=data['name']
+            for lst in self.user.shoppinglists :
+                if lst.name==lstname and lst.id != id :
+                    raise ValidationError('Invalid Shopping List: shopping list with same name already exists with differnet ID')
+
+            self.name = lstname
+
+            if 'storename' in data:
+                self.storename = data['storename']
+
             self.date = datetime_parser.parse(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))
         except KeyError as e:
             raise ValidationError('Invalid Shopping List: missing ' + e.args[0])

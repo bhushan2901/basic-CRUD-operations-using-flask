@@ -57,6 +57,7 @@ class User(db.Model):
         v = ValidationError('Invalid Shopping List: shoppinglist with specified name is not found : ' + name)
         v.response_code = 404
         v.error="not found"
+        raise v
 
     def get_shoppinglists_by_id(self, id):
         """ Return the single list which matches the id else return None """
@@ -68,7 +69,7 @@ class User(db.Model):
         v.error="not found"
         raise v
 
-    def isshoppinglistexists(self, data):
+    def is_shopping_list_exists(self, data):
         """ check if the shopping lists exists with same name """
         try:
             lstname = data['name']
