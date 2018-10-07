@@ -47,8 +47,7 @@ class ShoppingList(db.Model):
 
     def get_url(self):
         """ Return the url for shopping list object """
-        # TODO change this to use the shopping list ID
-        return url_for('api.get_user_shoppinglists_by_name', userid=self.user_id, name=self.name, _external=True)
+        return url_for('api.get_user_shoppinglists_by_id', userid=self.user_id, id=self.id, _external=True)
 
     def export_data(self):
         """ export the data in json format"""

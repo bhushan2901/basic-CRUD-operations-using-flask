@@ -30,7 +30,7 @@ def get_shopping_list():
 @json
 def get_shopping_list_using_pattern(pattern):
     """ return the list of all shoppinglists which contains the keyword int he requests"""
-    return ShoppingList.query.filter(ShoppingList.name.like('%',pattern,'%'))
+    return ShoppingList.query.filter(ShoppingList.name.like('%'+pattern+'%')).all()
 
 
 @api.route('/users/<int:userid>/shoppinglists/', methods=['GET'])
@@ -62,3 +62,11 @@ def get_user_shoppinglists_by_name(userid, name):
     user = User.query.get_or_404(userid)
     lst=user.get_shoppinglists_by_name(name)
     return (lst,200) if lst else abort(404,'No matching shopping lists found for the name provided in request')
+
+@api.route('/users/<int:userid>/shoppinglists/<int:id>', methods=['GET'])
+@json
+def get_user_shoppinglists_by_id(userid, id):
+    """ return user to the shopping list which matches with the id """
+    user = User.query.get_or_404(userid)
+    lst=user.get_shoppinglists_by_id(id)
+    return (lst,200) if lst else abort(404,'No matching shopping lists found for the ID provided in request')

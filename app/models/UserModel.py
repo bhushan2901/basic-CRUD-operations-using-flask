@@ -51,12 +51,22 @@ class User(db.Model):
 
     def get_shoppinglists_by_name(self, name):
         """ Return the single list which matches the name else return None """
+        print("bhushan")
+        
         for i in self.shoppinglists:
             if i.name == name:
                 return i
         return None
 
+    def get_shoppinglists_by_id(self, id):
+        """ Return the single list which matches the id else return None """
+        for i in self.shoppinglists:
+            if i.id == id:
+                return i
+        return None
+
     def isshoppinglistexists(self, data):
+        """ check if the shopping lists exists with same name """
         try:
             lstname = data['name']
             lst=self.get_shoppinglists_by_name(lstname)
