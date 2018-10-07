@@ -62,7 +62,8 @@ def json(f):
         print(rv)
 
         if not isinstance(rv, dict) and not isinstance(rv, list):
-            rv = rv.export_data()
+            if hasattr(rv, "export_data"):
+                rv = rv.export_data()
 
         if isinstance(rv, list):
           rv=[i.export_data() for i in rv]

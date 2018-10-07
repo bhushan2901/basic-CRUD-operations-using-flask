@@ -28,8 +28,12 @@ def bad_request(e):
 
 @api.app_errorhandler(404)  # this has to be an app-wide handler
 def not_found(e):
+    print(e.description)
+    ermsg='invalid resource URI'
+    if e:
+        ermsg = e.description
     response = jsonify({'status': 404, 'error': 'not found',
-                        'message': 'invalid resource URI'})
+                            'message': ermsg})
     response.status_code = 404
     return response
 

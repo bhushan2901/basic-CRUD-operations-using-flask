@@ -11,7 +11,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-05'
-__updated__='2018-10-06'
+__updated__='2018-10-07'
 
 from flask import request
 from . import api
@@ -49,3 +49,14 @@ def edit_user(id):
     db.session.add(user)
     db.session.commit()
     return user.export_data()
+
+
+@api.route('/users/<int:id>', methods=['DELETE'])
+@json
+def delete_user(id):
+    """ delete a user in the system """
+    user = User.query.get_or_404(id)
+    data=user.export_data()
+    db.session.delete(user)
+    db.session.commit()
+    return data

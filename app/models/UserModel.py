@@ -43,10 +43,28 @@ class User(db.Model):
         """ export user data from the database """
         return {
             'self_url': self.get_url(),
+            'id': self.id,
             'name': self.name,
-            'shoppinglist_url': url_for('api.get_user_shoppinglist', id=self.id,
+            'shoppinglist_url': url_for('api.get_user_shoppinglist', userid=self.id,
                                   _external=True)
         }
+
+    def get_shoppinglists_by_name(self, name):
+        """ Return the single list which matches the name else return None """
+        for i in self.shoppinglists:
+            if i.name == name:
+                return i
+        return None
+
+    def isshoppinglistexists(self, data):
+        try:
+            lstname = data['name']
+            lst=self.get_shoppinglists_by_name(lstname)
+            if lst :
+                return True
+        except KeyError as e:
+            raise ValidationError('Invalid Shopping List: missing ' + e.args[0])
+        return False
 
     def import_data(self, data):
         """ Import users """

@@ -24,7 +24,15 @@ class ShoppingList(db.Model):
 
     """ Database table name"""
     __tablename__ = 'shoppinglists'
-    name = db.Column(db.String, primary_key=True)
+
+    "unique id for shoppinglists table"
+    id = db.Column(db.Integer, primary_key=True)
+
+    "Title for the shoppign lists"
+    name = db.Column(db.String, unique=True)
+
+    "store name for this shopping lists"
+    storename=db.Column(db.String)
 
     """ userid which has this shohpping list object """
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
@@ -33,25 +41,41 @@ class ShoppingList(db.Model):
     """ Current date time at the time shopping list is created """
     date = db.Column(db.DateTime, default=datetime.now)
 
-    """ List of items in the shopping list """
+    """ List of items in the shopping list initially empty lists """
     items = db.relationship('Item', backref='shoppinglist', lazy='dynamic',
                             cascade='all, delete-orphan')
 
     def get_url(self):
         """ Return the url for shopping list object """
-        return url_for('api.get_shopping_list', name=self.name, _external=True)
+        # TODO change this to use the shopping list ID
+        return url_for('api.get_user_shoppinglists_by_name', userid=self.user_id, name=self.name, _external=True)
 
     def export_data(self):
         """ export the data in json format"""
         return {
             'self_url': self.get_url(),
             'user_url': self.user.get_url(),
+            "name" : self.name,
             'date': self.date.isoformat() + 'Z',
-            'items_url': url_for('api.get_shopping_list_items', name=self.name,
-                                 _external=True)
+            'storename' : self.storename,
+            'id': self.id
+            # TODO add a code to add the items
         }
 
-    def import_data(self, data, name):
+    def import_data(self, data):
+        """ Import the data for a shopping list item, we need to add more checks here for items"""
+        # TODO add items to the list
+        try:
+            self.name = data['name']
+            self.storename = data['storename']
+            self.date = datetime_parser.parse(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))
+        except KeyError as e:
+            raise ValidationError('Invalid Shopping List: missing ' + e.args[0])
+        return self
+
+
+    def update_data(self, data, name):
+        """ TODO """
         try:
             self.name = name
             self.date = datetime_parser.parse(datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'))

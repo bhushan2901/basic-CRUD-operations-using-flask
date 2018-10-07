@@ -29,5 +29,5 @@ def get_item(id):
 
 @api.route('/items/', methods=['GET'])
 @json
-def get_shopping_list_items(id):
+def get_shopping_list_items(name):
     return None
