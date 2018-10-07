@@ -70,3 +70,16 @@ def get_user_shoppinglists_by_id(userid, id):
     user = User.query.get_or_404(userid)
     lst=user.get_shoppinglists_by_id(id)
     return (lst,200) if lst else abort(404,'No matching shopping lists found for the ID provided in request')
+
+@api.route('/users/<int:userid>/shoppinglists/<int:id>', methods=['DELETE'])
+@json
+def delete_shoppinglists_by_id(userid,id):
+    """ delete a shoppinglist for given user """
+    user = User.query.get_or_404(userid)
+    lst=user.get_shoppinglists_by_id(id)
+    if not lst:
+        abort(404,'No matching shopping lists found for the ID provided in request')
+    data=lst.export_data()
+    db.session.delete(lst)
+    db.session.commit()
+    return data
