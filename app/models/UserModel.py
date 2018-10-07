@@ -10,7 +10,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-06'
-__updated__='2018-10-06'
+__updated__='2018-10-07'
 
 from flask import url_for, current_app
 from .. import db
@@ -51,19 +51,22 @@ class User(db.Model):
 
     def get_shoppinglists_by_name(self, name):
         """ Return the single list which matches the name else return None """
-        print("bhushan")
-        
         for i in self.shoppinglists:
             if i.name == name:
                 return i
-        return None
+        v = ValidationError('Invalid Shopping List: shoppinglist with specified name is not found : ' + name)
+        v.response_code = 404
+        v.error="not found"
 
     def get_shoppinglists_by_id(self, id):
         """ Return the single list which matches the id else return None """
         for i in self.shoppinglists:
             if i.id == id:
                 return i
-        return None
+        v = ValidationError('Invalid Shopping List: shoppinglist with specified ID is not found : ' + str(id))
+        v.response_code = 404
+        v.error="not found"
+        raise v
 
     def isshoppinglistexists(self, data):
         """ check if the shopping lists exists with same name """

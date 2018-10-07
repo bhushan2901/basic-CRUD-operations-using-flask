@@ -10,7 +10,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-06'
-__updated__='2018-10-06'
+__updated__='2018-10-07'
 
 from flask import request, jsonify
 from . import api
@@ -19,10 +19,11 @@ from .. import ValidationError
 
 @api.errorhandler(ValidationError)
 def bad_request(e):
+    print(e.response_code)
     """ error handler for the bad request"""
-    response = jsonify({'status': 400, 'error': 'bad request',
+    response = jsonify({'status': e.response_code, 'error': e.error,
                         'message': e.args[0]})
-    response.status_code = 400
+    response.status_code = e.response_code
     return response
 
 

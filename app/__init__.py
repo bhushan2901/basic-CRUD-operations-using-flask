@@ -10,7 +10,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-03'
-__updated__='2018-10-04'
+__updated__='2018-10-07'
 
 import os
 from flask import Flask, jsonify, g
@@ -59,7 +59,6 @@ def json(f):
 
         # if the response was a database model, then convert it to a
         # dictionary
-        print(rv)
 
         if not isinstance(rv, dict) and not isinstance(rv, list):
             if hasattr(rv, "export_data"):
@@ -80,4 +79,8 @@ def json(f):
 
 class ValidationError(ValueError):
     """ Validation error for any type of user validation currently blank"""
+
+    """ set response code for the validation"""
+    response_code = 400
+    error="bad request"
     pass

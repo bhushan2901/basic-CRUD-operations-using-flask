@@ -11,7 +11,7 @@ __all__ = []
 __version__ = 1.0
 __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-06'
-__updated__='2018-10-06'
+__updated__='2018-10-07'
 
 from flask import request, abort
 from . import api
@@ -45,10 +45,8 @@ def get_user_shoppinglist(userid):
 def new_user_shoppinglists(userid):
     """ add item to the shopping list"""
     user = User.query.get_or_404(userid)
-
     if user.isshoppinglistexists(request.json):
         raise ValidationError('Invalid Shopping List: shopping list with same name already exists ')
-
     slst = ShoppingList(user=user)
     slst.import_data(request.json)
     db.session.add(slst)
@@ -61,7 +59,7 @@ def get_user_shoppinglists_by_name(userid, name):
     """ return user to the shopping list which matches with the name """
     user = User.query.get_or_404(userid)
     lst=user.get_shoppinglists_by_name(name)
-    return (lst,200) if lst else abort(404,'No matching shopping lists found for the name provided in request')
+    return lst
 
 @api.route('/users/<int:userid>/shoppinglists/<int:id>', methods=['GET'])
 @json
@@ -69,7 +67,7 @@ def get_user_shoppinglists_by_id(userid, id):
     """ return user to the shopping list which matches with the id """
     user = User.query.get_or_404(userid)
     lst=user.get_shoppinglists_by_id(id)
-    return (lst,200) if lst else abort(404,'No matching shopping lists found for the ID provided in request')
+    return lst
 
 @api.route('/users/<int:userid>/shoppinglists/<int:id>', methods=['DELETE'])
 @json
@@ -77,9 +75,19 @@ def delete_shoppinglists_by_id(userid,id):
     """ delete a shoppinglist for given user """
     user = User.query.get_or_404(userid)
     lst=user.get_shoppinglists_by_id(id)
-    if not lst:
-        abort(404,'No matching shopping lists found for the ID provided in request')
     data=lst.export_data()
     db.session.delete(lst)
     db.session.commit()
     return data
+
+@api.route('/users/<int:userid>/shoppinglists/<int:id>', methods=['PUT'])
+@json
+def update_shoppinglists_by_id(userid,id):
+    """ udate a user in the system """
+    user = User.query.get_or_404(userid)
+    lst=user.get_shoppinglists_by_id(id)
+    #TODO write a function to update the shopping lists
+    lst.update_shopping_list(request.json)
+    db.session.add(lst)
+    db.session.commit()
+    return user.export_data()
