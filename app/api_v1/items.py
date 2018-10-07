@@ -35,10 +35,24 @@ def get_items():
 
 @api.route('/users/<int:userid>/shoppinglists/<int:lstid>/items', methods=['POST'])
 @json
-def get_shopping_list_items(userid, lstid):
+def add_shopping_items(userid, lstid):
     shoppinglst=User.query.get_or_404(userid).get_shoppinglists_by_id(lstid)
-    item = Item(shoppinglist=shoppinglst)
-    item.import_data(request.json)
-    db.session.add(item)
+    for i in request.json:
+        if shoppinglst.is_item_list_exists(i):
+            item = shoppinglst.get_item_by_name(i['name'])
+        else:
+            item = Item(shoppinglist=shoppinglst)
+        item.import_data(i)
+        db.session.add(item)
     db.session.commit()
-    return item, 201
+    return shoppinglst, 201
+
+@api.route('/users/<int:userid>/shoppinglists/<int:lstid>/items/<int:id>', methods=['DELETE'])
+@json
+def delete_shopping_list_items(userid, lstid, id):
+    shoppinglst=User.query.get_or_404(userid).get_shoppinglists_by_id(lstid)
+    item=shoppinglst.get_item_by_id(id)
+    data=item.export_data()
+    db.session.delete(item)
+    db.session.commit()
+    return data

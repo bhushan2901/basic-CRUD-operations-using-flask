@@ -57,7 +57,8 @@ class ShoppingList(db.Model):
             "name" : self.name,
             'date': self.date.isoformat() + 'Z',
             'storename' : self.storename,
-            'id': [item.export_data() for item in self.items]
+            'items': [item.export_data() for item in self.items],
+            'id' : self.id
             # TODO add a code to add the items
         }
 
@@ -100,3 +101,24 @@ class ShoppingList(db.Model):
         v.response_code = 404
         v.error="not found"
         raise v
+
+    def get_item_by_name(self, name):
+        """ Return the single item which matches the name else return None """
+        for i in self.items:
+            if i.name == name:
+                return i
+        v = ValidationError('Invalid Items List: Item with specified name is not found : ' + name)
+        v.response_code = 404
+        v.error="not found"
+        raise v
+
+    def is_item_list_exists(self, data):
+        """ check if the item exists with same name """
+        try:
+            itmname = data['name']
+            for i in self.items:
+                if i.name == itmname:
+                    return True
+        except KeyError as e:
+            raise ValidationError('Invalid Item List: missing ' + e.args[0])
+        return False

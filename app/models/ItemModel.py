@@ -48,9 +48,16 @@ class Item(db.Model):
         }
 
     def import_data(self, data):
+        """ import the item in database , is item exists for same user and same shoppinglist
+            then add the quantity in the item"""
         try:
-            self.name = data['name']
-            self.quantity = int(data['quantity'])
+            name = data['name']
+            self.name = name
+
+            if self.quantity :
+                self.quantity = self.quantity + int(data['quantity'])
+            else:
+                self.quantity = int(data['quantity'])
         except KeyError as e:
             raise ValidationError('Invalid order: missing ' + e.args[0])
         return self
