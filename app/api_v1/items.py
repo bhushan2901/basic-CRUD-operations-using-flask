@@ -19,6 +19,11 @@ from ..models.ItemModel import Item
 from ..models.ShoppingListModel import ShoppingList
 from ..models.UserModel import User
 
+@api.route('/items/', methods=['GET'])
+@json
+def get_items():
+    """ return full list of items ( should use pages or this method dosent seems to be useful) """
+    return Item.query.all()
 
 @api.route('/users/<int:userid>/shoppinglists/<int:lstid>/items/<int:id>', methods=['GET'])
 @json
@@ -28,20 +33,29 @@ def get_item(userid, lstid, id):
     item = shoppinglst.get_item_by_id(id)
     return item
 
-
-@api.route('/items/', methods=['GET'])
+@api.route('/users/<int:userid>/shoppinglists/<int:lstid>/items/<itemname>', methods=['GET'])
 @json
-def get_items():
-    """ return full list of items ( should use pages or this method dosent seems to be useful) """
-    return Item.query.all()
+def get_item_by_name(userid, lstid, itemname):
+    """ return the Item if found in database for itemname else return error code 404 """
+    shoppinglst = User.query.get_or_404(userid).get_shoppinglists_by_id(lstid)
+    item = shoppinglst.get_item_by_name(itemname)
+    return item
 
+@api.route('/users/<int:userid>/shoppinglists/items/<keyword>', methods=['GET'])
+@json
+def get_item_using_keyword(userid,keyword):
+    """ return the shoppinglists  if found in database else return error code 404 """
+    itemlst = Item.query.filter(Item.name.like('%'+keyword+'%')).all()
+    shoppingcartlst = [i.shoppinglist for i in itemlst]
+    return shoppingcartlst
 
 @api.route('/users/<int:userid>/shoppinglists/<int:lstid>/items', methods=['POST'])
 @json
 def add_shopping_items(userid, lstid):
     shoppinglst = User.query.get_or_404(userid).get_shoppinglists_by_id(lstid)
     for i in request.json:
-        if shoppinglst.is_item_list_exists(i):
+        if shoppinglst.is_item_exists(i):
+            # If item list exists then update the q
             item = shoppinglst.get_item_by_name(i['name'])
         else:
             item = Item(shoppinglist=shoppinglst)

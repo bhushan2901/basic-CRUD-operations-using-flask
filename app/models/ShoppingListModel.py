@@ -65,7 +65,6 @@ class ShoppingList(db.Model):
 
     def import_data(self, data):
         """ Import the data for a shopping list item, we need to add more checks here for items"""
-        # TODO add items to the list
         try:
             self.name = data['name']
             self.storename = data['storename']
@@ -80,13 +79,12 @@ class ShoppingList(db.Model):
         """ update the shopping list wiht new data, every time shopping list is updated the date filed will be updated as well"""
         try:
             lstname = data['name']
+            print("bhushan"+lstname  + self.name)
             for lst in self.user.shoppinglists:
                 if lst.name == lstname and lst.id != id:
-                    raise ValidationError(
-                        'Invalid Shopping List: shopping list with same name already exists with differnet ID')
+                    raise ValidationError('Invalid Shopping List: shopping list with same name already exists with differnet ID')
 
             self.name = lstname
-
             if 'storename' in data:
                 self.storename = data['storename']
 
@@ -119,7 +117,7 @@ class ShoppingList(db.Model):
         v.error = "not found"
         raise v
 
-    def is_item_list_exists(self, data):
+    def is_item_exists(self, data):
         """ check if the item exists with same name """
         try:
             itmname = data['name']

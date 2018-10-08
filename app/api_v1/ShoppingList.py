@@ -49,8 +49,7 @@ def new_user_shoppinglists(userid):
     """ add item to the shopping list"""
     user = User.query.get_or_404(userid)
     if user.is_shopping_list_exists(request.json):
-        raise ValidationError(
-            'Invalid Shopping List: shopping list with same name already exists ')
+        raise ValidationError('Invalid Shopping List: shopping list with same name already exists ')
     print("bhushan")
     slst = ShoppingList(user=user)
     slst.import_data(request.json)
@@ -76,6 +75,16 @@ def get_user_shoppinglists_by_id(userid, id):
     lst = user.get_shoppinglists_by_id(id)
     return lst
 
+@api.route('/users/<int:userid>/shoppinglists/<int:id>', methods=['PUT'])
+@json
+def update_shoppinglists_by_id(userid, id):
+    """ udate a user in the system """
+    user = User.query.get_or_404(userid)
+    lst = user.get_shoppinglists_by_id(id)
+    lst.update_data(id, request.json)
+    db.session.add(lst)
+    db.session.commit()
+    return lst.export_data()
 
 @api.route('/users/<int:userid>/shoppinglists/<int:id>', methods=['DELETE'])
 @json
@@ -87,15 +96,3 @@ def delete_shoppinglists_by_id(userid, id):
     db.session.delete(lst)
     db.session.commit()
     return data
-
-
-@api.route('/users/<int:userid>/shoppinglists/<int:id>', methods=['PUT'])
-@json
-def update_shoppinglists_by_id(userid, id):
-    """ udate a user in the system """
-    user = User.query.get_or_404(userid)
-    lst = user.get_shoppinglists_by_id(id)
-    lst.update_data(id, request.json)
-    db.session.add(lst)
-    db.session.commit()
-    return lst.export_data()

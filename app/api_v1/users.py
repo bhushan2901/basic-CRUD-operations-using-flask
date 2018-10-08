@@ -37,7 +37,6 @@ def get_user(id):
 def new_user():
     """ Add a new user to the list currently it will just keep adding the users with same name"""
     user = User()
-    print("Bhushan: ", request)
     user.import_data(request.json)
     db.session.add(user)
     db.session.commit()

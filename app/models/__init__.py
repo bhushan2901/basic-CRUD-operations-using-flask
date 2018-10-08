@@ -15,4 +15,4 @@ __author__ = 'Bhushan Barhate'
 __date__ = '2018-10-03'
 __updated__ = '2018-10-03'
 
-from . import ItemModel
+from . import ItemModel, ShoppingListModel, UserModel
