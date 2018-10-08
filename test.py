@@ -23,3 +23,4 @@ unittest.TextTestRunner(verbosity=2).run(suite)
 
 COV.stop()
 COV.report(show_missing=True)
+COV.html_report()
